@@ -2,6 +2,7 @@ package protobuf.codec.json;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
@@ -116,7 +117,18 @@ public class JacksonJsonReader {
         switch (token) {
             case VALUE_STRING:
                 if (JavaType.ENUM.equals(field.getJavaType())) {
-                    value = field.getEnumType().findValueByName(parser.getText());
+                	boolean useValues = false;
+                	
+                	if ( featureMap.containsKey(Feature.ENUM_USE_VALUES) ) {
+                		Collection col = (Collection)featureMap.get(Feature.ENUM_USE_VALUES);
+    	            	useValues = col.contains(value.getClass());
+                	}
+
+                	if ( useValues ) {
+                		value = field.getEnumType().findValueByNumber(parser.getIntValue());
+                	} else {
+                		value = field.getEnumType().findValueByName(parser.getText());
+                	}
                 } else if (JavaType.STRING.equals(field.getJavaType())) {
                     value = parser.getText();
                 } else if (JavaType.BYTE_STRING.equals(field.getJavaType())) {
