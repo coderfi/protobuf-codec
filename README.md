@@ -9,6 +9,11 @@ as "Another JSON encoder/decoder for Java"
 
 ## UPDATES:
 
+09/June/13: Disted version 1.2-enumval1
+     - Added Feature.ENUM_USE_VALUES (pass in a list of protobuf Enum classes)
+       to identify Enumerations that should be serialized/deserialized by value,
+       rather than by name
+
 20/Aug/11 : Disted version 1.2
      - Added support for text codec (courtesy aantono)
      - Support stripping of underscores and field name replacements for json (courtesy aantono)
