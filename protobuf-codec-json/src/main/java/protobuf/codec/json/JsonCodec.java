@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Collection;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -13,6 +14,7 @@ import org.codehaus.jackson.JsonParser;
 import protobuf.codec.AbstractCodec;
 import protobuf.codec.Codec;
 
+import com.google.protobuf.ProtocolMessageEnum;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import com.google.protobuf.Message.Builder;
@@ -95,6 +97,20 @@ public class JsonCodec extends AbstractCodec {
             case STRIP_FIELD_NAME_UNDERSCORES:
                 //noop Already handled
                 break;
+            case ENUM_USE_VALUES:
+            	if (value == null || !(value instanceof Collection)) {
+                    throw new IllegalArgumentException(String.format("Feature [%s] expected to be a Collection of com.google.protobuf.ProtocolMessageEnum", feature));
+            	}
+            	for (final Object obj : (Collection)value) {
+            		if (!(obj instanceof Class<?>)) {
+                        throw new IllegalArgumentException(String.format("Feature [%s] expected to be a Collection of com.google.protobuf.ProtocolMessageEnum. It contained an unexpected %s ", feature, obj.getClass().getSimpleName()));
+            		}
+            		final Class clz = (Class)obj;
+            		if ( !clz.isAssignableFrom(ProtocolMessageEnum.class) ) {
+                        throw new IllegalArgumentException(String.format("Feature [%s] expected to be a Collection of com.google.protobuf.ProtocolMessageEnum. It contained an unexpected %s ", feature, obj.getClass().getSimpleName()));
+            		}
+            	}
+            	break;
             default:
                 throw new IllegalArgumentException(String.format("Unsupported feature [%s]", feature));
         }

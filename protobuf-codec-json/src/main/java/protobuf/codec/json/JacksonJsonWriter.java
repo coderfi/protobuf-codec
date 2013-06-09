@@ -2,6 +2,7 @@ package protobuf.codec.json;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,18 @@ public class JacksonJsonWriter {
                 generator.writeString((String) value);
                 break;
             case ENUM:
-                generator.writeString(((EnumValueDescriptor) value).getName());
+            	boolean useValues = false;
+            	
+            	if ( featureMap.containsKey(Feature.ENUM_USE_VALUES) ) {
+            		Collection col = (Collection)featureMap.get(Feature.ENUM_USE_VALUES);
+	            	useValues = col.contains(value.getClass());
+            	}
+            	
+            	if ( useValues ) {
+            		generator.writeNumber(((EnumValueDescriptor) value).getNumber());
+            	} else {
+            		generator.writeString(((EnumValueDescriptor) value).getName());
+            	}
                 break;
             case BYTE_STRING:
                 generator.writeString(Base64.encodeBase64String(((ByteString) value).toByteArray()));

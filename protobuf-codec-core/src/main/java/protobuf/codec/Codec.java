@@ -160,6 +160,8 @@ public interface Codec {
         STRIP_FIELD_NAME_UNDERSCORES,
         /** Provide field name substitutes for reading and writing from/to a protobuf stream*/
         FIELD_NAME_READ_SUBSTITUTES,
-        FIELD_NAME_WRITE_SUBSTITUTES;
+        FIELD_NAME_WRITE_SUBSTITUTES,
+        /** use the Enumeration values instead of the names, (list of com.google.protobuf.ProtocolMessageEnum class) */
+        ENUM_USE_VALUES;
     }
 }
