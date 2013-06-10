@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Collection;
 
@@ -102,12 +103,10 @@ public class JsonCodec extends AbstractCodec {
                     throw new IllegalArgumentException(String.format("Feature [%s] expected to be a Collection of com.google.protobuf.ProtocolMessageEnum", feature));
             	}
             	for (final Object obj : (Collection)value) {
-            		if (!(obj instanceof Class<?>)) {
-                        throw new IllegalArgumentException(String.format("Feature [%s] expected to be a Collection of com.google.protobuf.ProtocolMessageEnum. It contained an unexpected %s ", feature, obj.getClass().getSimpleName()));
-            		}
-            		final Class clz = (Class)obj;
-            		if ( !clz.isAssignableFrom(ProtocolMessageEnum.class) ) {
-                        throw new IllegalArgumentException(String.format("Feature [%s] expected to be a Collection of com.google.protobuf.ProtocolMessageEnum. It contained an unexpected %s ", feature, obj.getClass().getSimpleName()));
+            		if (!(obj instanceof String)) {
+                        throw new IllegalArgumentException(
+                        		String.format("Feature [%s] expected to be a Collection of Strings (such as 'myproto.MyEnum'). It contained an unexpected %s ", 
+                        				feature, obj.getClass().getSimpleName()));
             		}
             	}
             	break;

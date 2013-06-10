@@ -10,7 +10,7 @@ as "Another JSON encoder/decoder for Java"
 ## UPDATES:
 
 09/June/13: Disted version 1.2-enumval1
-     - Added Feature.ENUM_USE_VALUES (pass in a list of protobuf Enum classes)
+     - Added Feature.ENUM_USE_VALUES (pass in a list of fully qualified name strings such as "myproto.MyEnum")
        to identify Enumerations that should be serialized/deserialized by value,
        rather than by name
 

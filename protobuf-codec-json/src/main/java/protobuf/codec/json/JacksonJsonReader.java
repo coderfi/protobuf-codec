@@ -114,16 +114,17 @@ public class JacksonJsonReader {
             JsonParser parser, ExtensionRegistry extnRegistry, Map<Feature, Object> featureMap) throws IOException {
         JsonToken token = parser.getCurrentToken();
         Object value = null;
+        
+    	boolean useValues = false;
+    	
+    	if ( featureMap.containsKey(Feature.ENUM_USE_VALUES) && JavaType.ENUM.equals(field.getJavaType()) ) {
+    		Collection col = (Collection)featureMap.get(Feature.ENUM_USE_VALUES);
+        	useValues = col.contains(field.getEnumType().getFullName());
+    	}
+
         switch (token) {
             case VALUE_STRING:
                 if (JavaType.ENUM.equals(field.getJavaType())) {
-                	boolean useValues = false;
-                	
-                	if ( featureMap.containsKey(Feature.ENUM_USE_VALUES) ) {
-                		Collection col = (Collection)featureMap.get(Feature.ENUM_USE_VALUES);
-    	            	useValues = col.contains(value.getClass());
-                	}
-
                 	if ( useValues ) {
                 		value = field.getEnumType().findValueByNumber(parser.getIntValue());
                 	} else {
@@ -148,9 +149,19 @@ public class JacksonJsonReader {
                 break;
             case VALUE_NUMBER_INT:
                 if (field.getJavaType().equals(JavaType.INT)) {
-                    value = parser.getIntValue();
+                	if ( useValues ) {
+                		value = field.getEnumType().findValueByNumber(parser.getIntValue());
+                	} else {
+                		value = parser.getIntValue();
+                	}
                 } else if (JavaType.LONG.equals(field.getJavaType())) {
                     value = parser.getLongValue();
+                } else if (JavaType.ENUM.equals(field.getJavaType())) {
+                	if ( useValues ) {
+                		value = field.getEnumType().findValueByNumber(parser.getIntValue());
+                	} else {
+                		value = field.getEnumType().findValueByName(parser.getText());
+                	}
                 } else {
                     throw new UnsupportedEncodingException(
                             String.format(

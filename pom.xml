@@ -65,8 +65,8 @@ http://maven.apache.org/maven-v4_0_0.xsd">
     </reporting>
     <distributionManagement>
         <repository>
-            <id>git-protobuf-repo</id>
-            <url>http://github.com/coderfi/protobuf-codec/tree/master/dist/</url>
+            <id>corp-repo</id>
+            <url>http://alpha-01.fafalabs.net:8081/nexus/releases</url>
        </repository>
     </distributionManagement>
 </project>

@@ -67,7 +67,8 @@ public class JacksonJsonWriter {
     // Extract the field value depending on its java type
     private static void writeFieldValue(FieldDescriptor fieldDesc, Object value, JsonGenerator generator, Map<Feature, Object> featureMap) throws IOException {
 
-        switch (fieldDesc.getJavaType()) {
+        Object EnumValueDescriptor;
+		switch (fieldDesc.getJavaType()) {
             case INT:
                 generator.writeNumber((Integer) value);
                 break;
@@ -88,16 +89,17 @@ public class JacksonJsonWriter {
                 break;
             case ENUM:
             	boolean useValues = false;
+            	EnumValueDescriptor myenum = (EnumValueDescriptor)value;
             	
             	if ( featureMap.containsKey(Feature.ENUM_USE_VALUES) ) {
             		Collection col = (Collection)featureMap.get(Feature.ENUM_USE_VALUES);
-	            	useValues = col.contains(value.getClass());
+	            	useValues = col.contains(myenum.getType().getFullName());
             	}
             	
             	if ( useValues ) {
-            		generator.writeNumber(((EnumValueDescriptor) value).getNumber());
+            		generator.writeNumber(myenum.getNumber());
             	} else {
-            		generator.writeString(((EnumValueDescriptor) value).getName());
+            		generator.writeString(myenum.getName());
             	}
                 break;
             case BYTE_STRING:
